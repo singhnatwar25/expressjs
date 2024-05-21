@@ -3,14 +3,16 @@
     "builds": [
       {
         "src": "bin/www",
-        "use": "@vercel/node"
+        "use": "app.js"
       }
     ],
     "routes": [
       {
-        "src": "/(.*)",
+        "src": "/",
         "dest": "index.js"
       }
     ]
+    
   }
+  
   
