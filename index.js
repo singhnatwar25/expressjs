@@ -1,9 +1,9 @@
 const express = require("express");
+const app = express();
 const favicon = require('serve-favicon');
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
 
-const app = express();
 
 app.get("/", (req, res) => {
   res.send("Express on Vercel");
