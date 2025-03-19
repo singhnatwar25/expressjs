@@ -1,15 +1,399 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
+    <title>AI Resume Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .resume-container {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-control {
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .section-title {
+            color: #007bff;
+            font-weight: bold;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+            margin-top: 20px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .icon {
+            margin-right: 8px;
+            color: #007bff;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Hello natwar</h1>
+
+    <div class="container mt-5">
+        <h2 class="text-center text-primary fw-bold">Resume Generator</h2>
+    
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="resume-container">
+                    <h4 class="section-title"><i class="fa-solid fa-user icon"></i> Personal Details</h4>
+                    <form id="resume-form">
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="name" placeholder="Enter your full name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Profession</label>
+                            <input type="text" class="form-control" id="profession" placeholder="Your profession">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Profile Summary</label>
+                            <textarea class="form-control" id="profile_summary" placeholder="Brief about yourself"></textarea>
+                        </div>
+    
+                        <h4 class="section-title"><i class="fa-solid fa-phone icon"></i> Contact Information</h4>
+                        <div class="mb-3">
+                            <label class="form-label">Phone Number</label>
+                            <input type="text" class="form-control" id="phone" placeholder="Enter your phone number" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Location</label>
+                            <input type="text" class="form-control" id="location" placeholder="City, Country">
+                        </div>
+    
+                        <h4 class="section-title"><i class="fa-solid fa-lightbulb icon"></i> Skills</h4>
+                        <div class="mb-3">
+                            <textarea class="form-control" id="skills" placeholder="List your skills..."></textarea>
+                        </div>
+    
+                        <h4 class="section-title"><i class="fa-solid fa-language icon"></i> Languages</h4>
+                        <div class="mb-3">
+                            <textarea class="form-control" id="languages" placeholder="List the languages you speak..."></textarea>
+                        </div>
+    
+                        <h4 class="section-title"><i class="fa-solid fa-briefcase icon"></i> Work Experience</h4>
+                        <div id="experience-container">
+                            <div class="experience-entry">
+                                <div class="mb-3">
+                                    <label class="form-label">Company Name</label>
+                                    <input type="text" class="form-control company" placeholder="Company name">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Job Title</label>
+                                    <input type="text" class="form-control job" placeholder="Job title">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Start Date</label>
+                                    <input type="date" class="form-control start-date">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">End Date</label>
+                                    <input type="date" class="form-control end-date">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Job Description</label>
+                                    <textarea class="form-control job-desc" placeholder="Brief job description"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-secondary mb-3" onclick="addExperience()">+ Add More Experience</button>
+    
+                        <h4 class="section-title"><i class="fa-solid fa-graduation-cap icon"></i> Education</h4>
+                        <div id="education-container">
+                            <div class="education-entry">
+                                <div class="mb-3">
+                                    <label class="form-label">School/College Name</label>
+                                    <input type="text" class="form-control school" placeholder="Institution name">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Education Level</label>
+                                    <select class="form-control education-level">
+                                        <option value="Senior Secondary">Senior Secondary</option>
+                                        <option value="Secondary">Secondary</option>
+                                        <option value="Graduation">Graduation</option>
+                                        <option value="Post Graduation">Post Graduation</option>
+                                        <option value="Diploma">Diploma</option>
+                                        <option value="Degree">Degree</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Start Year</label>
+                                    <input type="date" class="form-control edu-start-date">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">End Year</label>
+                                    <input type="date" class="form-control edu-end-date">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-secondary mb-3" onclick="addEducation()">+ Add More Education</button>
+    
+                        <button type="button" class="btn btn-primary w-100" onclick="generateResume()">
+                            <i class="fa-solid fa-file-pdf"></i> Generate Resume
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <script>
+        function addExperience() {
+    let container = document.getElementById("experience-container");
+    let newExperience = document.createElement("div");
+    newExperience.classList.add("experience-entry");
+    newExperience.innerHTML = `
+        <div class="mb-3">
+            <label class="form-label">Company Name</label>
+            <input type="text" class="form-control company">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Job Title</label>
+            <input type="text" class="form-control job">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Start Date</label>
+            <input type="date" class="form-control start-date">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">End Date</label>
+            <input type="date" class="form-control end-date">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Job Description</label>
+            <textarea class="form-control job-desc"></textarea>
+        </div>
+    `;
+    container.appendChild(newExperience);
+}
+
+function addEducation() {
+    let container = document.getElementById("education-container");
+    let newEducation = document.createElement("div");
+    newEducation.classList.add("education-entry");
+    newEducation.innerHTML = `
+        <div class="mb-3">
+            <label class="form-label">School/College Name</label>
+            <input type="text" class="form-control school">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Education Level</label>
+            <select class="form-control education-level">
+                <option value="Senior Secondary">Senior Secondary</option>
+                <option value="Secondary">Secondary</option>
+                <option value="Graduation">Graduation</option>
+                <option value="Post Graduation">Post Graduation</option>
+                <option value="Diploma">Diploma</option>
+                <option value="Degree">Degree</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Start Year</label>
+            <input type="date" class="form-control edu-start-date">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">End Year</label>
+            <input type="date" class="form-control edu-end-date">
+        </div>
+    `;
+    container.appendChild(newEducation);
+}
+
+    </script>
+
+<script>
+    function generateResume() {
+    downloadPDF();
+}
+
+function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    let y = 20; // Initial Y-axis position
+
+    // **Name & Profession (Left Side)**
+    doc.setTextColor(0, 0, 139);
+    doc.setFontSize(20);
+    doc.text(document.getElementById("name").value, 10, y); // Name
+
+    y += 10;
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(14);
+    doc.text(document.getElementById("profession").value, 10, y); // Profession
+
+    // **Contact Details (Right Side)**
+    doc.setFontSize(11);
+    doc.text(`Phone: ${document.getElementById("phone").value}`, 120, 20);
+    doc.text(`Email: ${document.getElementById("email").value}`, 120, 25);
+    doc.text(`Location: ${document.getElementById("location").value}`, 120, 30);
+
+    // **Horizontal Line**
+    y += 4;
+    doc.setDrawColor(0, 0, 0);
+    doc.line(10, y, 200, y);
+    y += 10;
+
+    /** --------------------------
+     * Profile Section
+     * -------------------------- */
+    doc.setTextColor(0, 0, 139);
+    doc.setFontSize(12);
+    doc.text("PROFILE", 10, y);
+
+    y += 3;
+    doc.line(10, y, 200, y);
+    y += 5;
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(12);
+    let profileText = doc.splitTextToSize(document.getElementById("profile_summary").value, 180);
+    doc.text(profileText, 10, y);
+    y += profileText.length * 5;
+    y += 5;
+
+    /** --------------------------
+     * Work Experience (Supports Multiple Entries)
+     * -------------------------- */
+    doc.setTextColor(0, 0, 139);
+    doc.setFontSize(12);
+    doc.text("EXPERIENCE", 10, y);
+
+    y += 3;
+    doc.line(10, y, 200, y);
+    y += 5;
+
+    let experiences = document.querySelectorAll(".experience-entry");
+    experiences.forEach((exp) => {
+        let company = exp.querySelector(".company").value;
+        let job = exp.querySelector(".job").value;
+        let startDate = exp.querySelector(".start-date").value;
+        let endDate = exp.querySelector(".end-date").value;
+        let jobDesc = exp.querySelector(".job-desc").value;
+
+        // **Company Name (Left) & Dates (Right)**
+        doc.setTextColor(0, 0, 139);
+        doc.setFontSize(12);
+        doc.text(company, 10, y); // Company Name (Left)
+        doc.text(`${startDate} to ${endDate}`, 190, y, { align: "right" }); // Dates (Right)
+
+        // **Job Title Below Company Name**
+        y += 6;
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(12);
+        doc.text(job, 10, y); // Job Title Below Company Name
+
+        // **Job Description Below Job Title (Wrapped)**
+        y += 5;
+        let jobDescText = doc.splitTextToSize(jobDesc, 180);
+        doc.text(jobDescText, 10, y); // Job Description Below
+        y += jobDescText.length * 5;
+        y += 5;
+    });
+
+    /** --------------------------
+     * Skills Section
+     * -------------------------- */
+    doc.setTextColor(0, 0, 139);
+    doc.setFontSize(12);
+    doc.text("SKILLS", 10, y);
+
+    y += 3;
+    doc.line(10, y, 200, y);
+    y += 5;
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(12);
+    let skillsText = doc.splitTextToSize(document.getElementById("skills").value, 180);
+    doc.text(skillsText, 10, y);
+    y += skillsText.length * 5;
+    y += 5;
+
+    /** --------------------------
+     * Education (Supports Multiple Entries)
+     * -------------------------- */
+    doc.setTextColor(0, 0, 139);
+    doc.setFontSize(12);
+    doc.text("EDUCATION", 10, y);
+
+    y += 3;
+    doc.line(10, y, 200, y);
+    y += 5;
+
+    let educationEntries = document.querySelectorAll(".education-entry");
+    educationEntries.forEach((edu) => {
+        let school = edu.querySelector(".school").value;
+        let level = edu.querySelector(".education-level").value;
+        let startYear = edu.querySelector(".edu-start-date").value;
+        let endYear = edu.querySelector(".edu-end-date").value;
+
+        // **School Name (Left) & Dates (Right)**
+        doc.setTextColor(0, 0, 139);
+        doc.setFontSize(12);
+        doc.text(school, 10, y); // School Name (Left)
+        doc.text(`${startYear} to ${endYear}`, 190, y, { align: "right" }); // Dates (Right)
+
+        // **Degree Below School Name**
+        y += 6;
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(12);
+        doc.text(level, 10, y); // Degree Below
+        y += 10;
+    });
+
+    /** --------------------------
+     * Languages Section
+     * -------------------------- */
+    doc.setTextColor(0, 0, 139);
+    doc.setFontSize(12);
+    doc.text("LANGUAGES", 10, y);
+
+    y += 3;
+    doc.line(10, y, 200, y);
+    y += 5;
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(12);
+    let languagesText = doc.splitTextToSize(document.getElementById("languages").value, 180);
+    doc.text(languagesText, 10, y);
+    y += languagesText.length * 5;
+    y += 5;
+
+
+  
+    /** --------------------------
+     * Save the PDF
+     * -------------------------- */
+    doc.save("Resume.pdf");
+}
+
+</script>
 </body>
+
 </html>
+
