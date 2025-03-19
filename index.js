@@ -1,21 +1,24 @@
+
 const express = require("express");
+const path = require("path");
+const favicon = require("serve-favicon");
+
 const app = express();
-const favicon = require('serve-favicon');
-app.use(favicon(__dirname + '/public/favicon.ico'));
 
+// Favicon serve karega
+app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 
+// Static files serve karne ke liye
+app.use(express.static(path.join(__dirname, "public")));
 
+// Root URL par index.html serve karega
 app.get("/", (req, res) => {
-  res.send(/);
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.get('/favicon.ico', (req, res) => {
-    res.status(404).send('No favicon available');
-});
-
-
-app.listen(5000, () => {
-  console.log("Running on port 5000.");
+const PORT = 5000;
+app.listen(PORT, () => {
+  console.log(`Running on port ${PORT}.`);
 });
 
 // Export the Express API
