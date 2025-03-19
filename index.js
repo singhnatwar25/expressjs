@@ -6,7 +6,7 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 
 
 app.get("/", (req, res) => {
-  res.send("Express on Vercel natwar");
+  res.send(/);
 });
 
 app.get('/favicon.ico', (req, res) => {
